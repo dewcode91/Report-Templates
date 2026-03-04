@@ -1,26 +1,29 @@
-# Unprotected admin functionality (robots.txt file disclose admin panel)
+# Unrestricted Admin Features Exposed via robots.txt
 
 #### Description
-At its most basic, vertical privilege escalation arises where an application does not enforce any protection over sensitive functionality. For example, administrative functions might be linked from an administrator's welcome page but not from a user's welcome page. However, a user might simply be able to access the administrative functions by browsing directly to the relevant admin URL.
 
-For example, a website might host sensitive functionality at the following URL:
+Vertical privilege escalation occurs when an application fails to restrict access to sensitive or administrative functionality, allowing users with insufficient privileges to access powerful features. In many cases, admin interfaces are not linked in standard user navigation, but if access controls are missing, anyone who knows (or discovers) the URL can reach them.
 
-https://insecure-website.com/admin
+Frequently, sensitive locations such as admin panels are inadvertently disclosed in files intended for web crawlers, like `robots.txt`. For example:
 
-This might in fact be accessible by any user, not only administrative users who have a link to the functionality in their user interface. In some cases, the administrative URL might be disclosed in other locations, such as the robots.txt file:
+- Admin Control Panel: `https://insecure-website.com/admin`
+- robots.txt location: `https://insecure-website.com/robots.txt`
 
-https://insecure-website.com/robots.txt
-
-Even if the URL isn't disclosed anywhere, an attacker may be able to use a wordlist to brute-force the location of the sensitive functionality. 
-
+When a sensitive path is present in `robots.txt`, attackers can discover it by reviewing the file's contents. Even if not listed, common wordlists allow brute-forcing such endpoints.
 
 #### Steps to Reproduce
 
-1. Go to the lab and view `robots.txt` by appending `/robots.txt` to the lab URL.
-2. Note that the disallow line identifies the path to the admin panel. 
-3. In the URL bar replace `/robots.txt` with `/administrator-panel` to load the admin panel. 
-4. Delete user `carlos`. 
+1. Navigate to the application and access `robots.txt` by appending `/robots.txt` to the base URL.
+2. Observe the presence of a `Disallow` directive referencing the admin panel path.
+3. Replace `/robots.txt` in the address bar with the disclosed admin path (e.g., `/administrator-panel`) to access the admin interface.
+4. Demonstrate impact by performing privileged actions, such as deleting a user (e.g., user `carlos`).
 
-#### Impact 
+#### Impact
 
-By gaining access to admin functionality, a low privilege user can perform actions that are typically restricted to administrators or privileged users. This could include modifying or deleting sensitive data, altering system configurations, or creating new user accounts with elevated privileges.
+Exposure of admin functionality to unauthorized users enables vertical privilege escalation. As a result, an attacker could carry out actions reserved for administrators, such as:
+
+- Modifying or deleting sensitive system data  
+- Changing configuration settings  
+- Managing user accounts, including granting themselves elevated permissions  
+
+Such access puts the application's integrity, confidentiality, and availability at significant risk.
