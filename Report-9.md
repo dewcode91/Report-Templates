@@ -1,14 +1,25 @@
-# XSS in search parameter
+# Cross-Site Scripting (XSS) Vulnerability in Search Parameter
 
-#### Description
+## Summary
 
-I have found a Cross-Site Scripting vulnerability in search query https://www.example.com/search?q=[payload], by injecting malicious JavaScript code through the search parameter, an attacker can exploit this vulnerability to execute arbitrary code in the context of other users' browsers. This could potentially lead to various malicious activities, such as session hijacking, defacement, or phishing attacks.
+A Cross-Site Scripting (XSS) vulnerability exists in the search parameter of [https://www.example.com/search?q=](https://www.example.com/search?q=). An attacker can inject malicious JavaScript via the `q` parameter, leading to arbitrary script execution in users' browsers.
 
-#### Steps to Reproduce
+## Steps to Reproduce
 
-1. Visit https://www.example.com/search?q=%27-alert%28document.domain%29-%27.
-2. Now you can see pop on screen.
+1. Navigate to:  
+   `https://www.example.com/search?q=%27-alert(document.domain)-%27`
+2. An alert pop-up will appear, demonstrating code execution.
 
-#### Impact
+## Impact
 
-The XSS vulnerability in the search parameter could allow an attacker to compromise user accounts, steal sensitive information, or perform actions on behalf of other users. This can lead to severe reputational damage, loss of user trust, and potential legal implications.
+This vulnerability allows attackers to:
+- Steal sensitive user information (e.g., session cookies)
+- Hijack user accounts
+- Perform actions as other users (impersonation)
+- Conduct phishing attacks or deface the site
+
+Such issues can result in reputational harm, legal liability, and loss of user trust.
+
+## Recommendation
+
+Sanitize and properly encode user-supplied input in the search parameter to prevent script injection.
