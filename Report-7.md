@@ -1,24 +1,32 @@
-# Import calendar from the URL feature's can lead to blind SSRF
+# Blind SSRF via "Import Calendar from URL" Feature
 
-#### Description
-While exploring calendar application, i noticed an endpoint that allows a user to import the calendar from external resources. A malicious user can abuse this feature to interact with the internal networks or performing the port scans.
+## Summary
+The "Import Calendar from URL" functionality in the calendar application is vulnerable to blind Server-Side Request Forgery (SSRF). This allows attackers to make the server initiate requests to internal network resources or conduct port scanning, which may lead to sensitive information disclosure or further compromise of internal systems.
 
-During my investigation, I noticed if a user tries to import a calendar from http://127.0.0.1/. The server will respond with the error message `unsupported_url`
+## Vulnerability Details
 
-But if the user tries to import a calendar from http://127.0.0.1:22 (with the port number) then he can successfully import a blank calendar from the local server. I tested port 1-1000 and found port 22,25 and 873 are responding.
+While reviewing the calendar app, I discovered that the feature for importing calendars from external URLs can be exploited for SSRF:
 
-This behavior can lead to performing port scanning to the internal network or may be possible to read internal files from the server.
+- When attempting to import a calendar from `http://127.0.0.1/`, the server correctly blocks the request and returns `unsupported_url`.
+- However, specifying a local address with an explicit port, such as `http://127.0.0.1:22`, results in a successful (albeit blank) calendar import. Ports 22, 25, and 873 responded during my scan across ports 1-1000.
+- This behavior enables attackers to probe internal network ports and potentially interact with services that should not be exposed, risking data exfiltration or further attacks.
 
-#### Steps to Reproduce
-1. Browse and sign in https://calendar.example.com
-2. Observe import icon infront of Calendars > Click from a URL
-3. Now try to import calendar from http://127.0.0.1:22 and observe the response
+## Steps to Reproduce
 
-#### Impact
-Exploiting this vulnerability, an attacker can perform a range of malicious activities, including but not limited to:
+1. Log in to `https://calendar.example.com`.
+2. Click the import icon next to "Calendars" and select "From a URL".
+3. Enter a URL like `http://127.0.0.1:22` and observe the system’s response.
 
-- Information Disclosure: By accessing internal resources, the attacker can gather sensitive information such as server configuration, application data, or credentials.
+## Impact
 
-- Network Scanning: The attacker can use the application server as a proxy to scan other internal systems, potentially identifying additional vulnerabilities or sensitive information.
+By exploiting this vulnerability, attackers can:
 
-- Internal Network Compromise: Exploiting SSRF can allow an attacker to access internal systems or services that are not intended to be exposed publicly, leading to further compromise, lateral movement, or unauthorized access.
+- **Conduct Internal Port Scans:** The server can be used to scan internal IPs and ports, identifying potential internal services and weaknesses.
+- **Access Restricted Resources:** Attackers may reach internal services or files not accessible externally, risking data leakage or further exploitation.
+- **Enable Further Attacks:** Gaining information about internal network structure and open ports can assist in lateral movement or other attack vectors.
+
+## Recommendation
+
+- Implement strict allow-lists for external URLs and disallow any access to internal IP ranges and reserved addresses, regardless of port.
+- Sanitize and validate all input URLs to prevent SSRF attacks.
+- Monitor and alert on suspicious import attempts, especially those targeting private network ranges or unusual ports.
