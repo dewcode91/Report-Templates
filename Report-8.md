@@ -1,15 +1,17 @@
-# Information Disclosure (Django debug mode enabled)
+# Information Disclosure: Django Debug Mode Enabled
 
-#### Description
-Your website `https://stage.example.com/` is running with debug mode turned on (DEBUG = True ). One of the main features of debug mode is the display of detailed error pages. If your app raises an exception when DEBUG is True, Django will display a detailed traceback, including a lot of metadata about your environment, such as all the currently defined Django settings
+## Description
+The website `https://stage.example.com/` is operating with Django's debug mode enabled (`DEBUG = True`). When enabled, Django displays detailed error tracebacks with extensive environment metadata, including sensitive settings, upon encountering exceptions.
 
-#### Steps to Reproduce
-1. Visit https://stage.example.com/NON_EXISTING_PATH/ > Observe the information of debugging
+## Steps to Reproduce
+1. Visit: https://stage.example.com/NON_EXISTING_PATH/
+2. Observe the detailed debug information displayed in the error page.
 
-#### Impact
+## Impact
+Debug mode exposes internal details such as configuration files, API keys, database credentials, and server directories. A malicious actor could exploit this information to compromise the system’s security.
 
-Django DEBUG mode was enabled and showed some information on some errors.I just followed the errors and finally got some sensitive system information such as configuration, API keys ,Database users ,System Directories,etc..
+## CVSS Score
+[CVSS v3.0: 5.3 (Medium)](https://www.first.org/cvss/calculator/3.0#CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N)
 
-#### CVSS Score
-
-https://www.first.org/cvss/calculator/3.0#CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N 
+## Recommendation
+Disable Django debug mode (`DEBUG = False`) in all production and staging environments to prevent information leakage. Ensure sensitive settings are never exposed publicly.
