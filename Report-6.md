@@ -1,17 +1,17 @@
-# XSS due to older version of Swagger UI
+# Cross-Site Scripting (XSS) Vulnerability in Outdated Swagger UI
 
 #### Description
-Swagger UI is a web interface for interacting with a web API defined using the OpenAPI (formerly known as Swagger) specification. It allows you to visualize and interact with the API's resources without having to write any code.
+Swagger UI is a user-friendly web application that allows users to interact with APIs described by the OpenAPI (formerly Swagger) specification. It provides an interface for viewing and testing API endpoints without writing code.
 
-Some old Swagger UI versions are vulnerable to XSS by overwriting their configuration with the `?configUrl` or `?url` parameter. By doing so, you can override the page to do a malicious act, while it still has a trustworthy URL. And no authentication is needed to exploit this vulnerability
+Older versions of Swagger UI contain a known XSS vulnerability that allows an attacker to manipulate application configuration via the `?configUrl` or `?url` query parameters. By supplying a malicious configuration file using these parameters, an attacker can inject arbitrary JavaScript into pages served by Swagger UI—without requiring authentication. The exploit can be delivered under a legitimate-looking URL, increasing the risk of trust exploitation.
 
 #### Steps to Reproduce
-1. Go to: {{endpoint}}?configUrl=https://jumpy-floor.surge.sh/test.json
-2. Observe an alert box on your screen
+1. Navigate to: `{{endpoint}}?configUrl=https://jumpy-floor.surge.sh/test.json`
+2. You will see a JavaScript alert box appear, demonstrating successful script injection.
 
 #### Impact
-This vulnerability allows an attacker to inject and execute arbitrary script code within the context of a user's web browser. This malicious script code can be used to steal sensitive user information, perform phishing attacks, or even gain unauthorised access to the user's account.
+Exploiting this vulnerability enables attackers to execute arbitrary scripts in the victim’s browser. Potential consequences include theft of sensitive user data, phishing campaigns, or unauthorized actions on behalf of the victim, including potential account compromise.
 
-#### Resources / Supporting Material:
-- https://www.vidocsecurity.com/blog/hacking-swagger-ui-from-xss-to-account-takeovers/
-- https://app.vidocsecurity.com/public-library/787db825-d8c0-4182-a79f-6c7520745c49
+#### References
+- [Hacking Swagger UI: From XSS to Account Takeovers – Vidoc Security](https://www.vidocsecurity.com/blog/hacking-swagger-ui-from-xss-to-account-takeovers/)
+- [Vidoc Security Public Library Entry](https://app.vidocsecurity.com/public-library/787db825-d8c0-4182-a79f-6c7520745c49)
